@@ -4,7 +4,6 @@ import Prelude
 import Yesod
 import Yesod.Static
 import Yesod.Auth
-import Yesod.Auth.BrowserId
 import Yesod.Auth.GoogleEmail
 import Yesod.Default.Config
 import Yesod.Default.Util (addStaticContentExternal)
@@ -71,7 +70,6 @@ instance Yesod App where
         pc <- widgetToPageContent $ do
             $(combineStylesheets 'StaticR
                 [ css_normalize_css
-                , css_bootstrap_css
                 ])
             $(widgetFile "default-layout")
         giveUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
@@ -127,10 +125,10 @@ instance YesodAuth App where
         case x of
             Just (Entity uid _) -> return $ Just uid
             Nothing -> do
-                fmap Just $ insert $ User (credsIdent creds) Nothing
+                fmap Just $ insert $ User (credsIdent creds)
 
     -- You can add other plugins like BrowserID, email or OAuth here
-    authPlugins _ = [authBrowserId def, authGoogleEmail]
+    authPlugins _ = [authGoogleEmail]
 
     authHttpManager = httpManager
 
