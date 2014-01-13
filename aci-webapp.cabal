@@ -20,10 +20,8 @@ library
                      Settings.StaticFiles
                      Settings.Development
                      Handler.Home
-                     Handler.MenuBar
-                     Handler.JQueryWidget
-                     Handler.BootstrapWidget
                      Handler.About
+                     Handler.Upload
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT

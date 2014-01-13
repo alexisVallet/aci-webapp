@@ -46,6 +46,55 @@ mkYesodData "App" $(parseRoutesFile "config/routes")
 
 type Form x = Html -> MForm (HandlerT App IO) (FormResult x, Widget)
 
+jQuery :: Widget
+jQuery = do
+  addScript $ StaticR js_jquery_1_10_2_js
+
+bootstrap :: Widget
+bootstrap = do
+  addStylesheet $ StaticR css_bootstrap_css
+  addScript $ StaticR js_bootstrap_js
+
+navbar :: Widget
+navbar = do
+  jQuery
+  bootstrap
+  toWidget $ [cassius|
+   body
+     padding-top: 60px
+  |]
+  muser <- handlerToWidget maybeAuth
+  [whamlet|
+   <div .navbar .navbar-default .navbar-fixed-top role=navigation>
+     <div .container>
+       <div .navbar-header>
+         <button type=button .navbar-toggle data-toggle=collapse data-target=".navbar-collapse">
+           <span .sr-only>Toggle navigation
+           <span .icon-bar>
+           <span .icon-bar>
+           <span .icon-bar>
+         <a .navbar-brand href=@{HomeR}>ACI Web application
+       <div .collapse .navbar-collapse>
+         <ul .nav .navbar-nav>
+           <li>
+             <a href=@{HomeR}>
+               Home
+           <li>
+             <a href=@{AboutR}>
+               About
+           <li>
+             $maybe Entity _ user <- muser
+               <a href=@{AuthR LogoutR}>
+                 Sign out #{userMail user}
+             $nothing
+               <a href=@{AuthR LoginR}>
+                 Sign in
+           $maybe Entity _ _ <- muser
+             <li>
+               <a href=@{UploadR}>
+                 Upload image
+   |]
+
 -- Please see the documentation for the Yesod typeclass. There are a number
 -- of settings which can be configured by overriding methods here.
 instance Yesod App where
@@ -129,7 +178,20 @@ instance YesodAuth App where
 
     -- You can add other plugins like BrowserID, email or OAuth here
     authPlugins _ = [authGoogleEmail]
-
+    loginHandler = lift $ do
+      master <- getYesod
+      defaultLayout $ do
+        [whamlet|
+         <div .container>
+           <div .page-header>
+             <h1>
+               Login
+           <p .lead>
+             Please log in using one of the following method:
+           $forall plugin <- authPlugins master
+             ^{apLogin plugin AuthR}
+        |]
+                         
     authHttpManager = httpManager
 
 -- This instance is required to use forms. You can modify renderMessage to

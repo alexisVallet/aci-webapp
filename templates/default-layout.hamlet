@@ -1,3 +1,4 @@
+^{navbar}
 $maybe msg <- mmsg
-    <div #message>#{msg}
+  <div .aler .alert-info>#{msg}
 ^{widget}

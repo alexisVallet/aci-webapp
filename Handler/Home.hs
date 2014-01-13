@@ -2,9 +2,6 @@
 module Handler.Home where
 
 import Import
-import Yesod.Auth
-
-import Handler.MenuBar
 
 -- This is a handler function for the GET request method on the HomeR
 -- resource pattern. All of your resource patterns are defined in
@@ -16,7 +13,6 @@ import Handler.MenuBar
 getHomeR :: Handler Html
 getHomeR = do
   defaultLayout $ do
-    menuBar
     [whamlet|
      <div .container>
        <div .page-header>

@@ -5,12 +5,9 @@ module Handler.About where
 
 import Import
 
-import Handler.MenuBar
-
 getAboutR :: Handler Html
 getAboutR = do
   defaultLayout $ do
-    menuBar
     [whamlet|
          <div .container>
            <div .page-header>
