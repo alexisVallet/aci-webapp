@@ -6,7 +6,8 @@ User
 Image
     filename String
     title Text
-    description Text
+    description Textarea Maybe
+    uploader UserId
     deriving Show
     deriving Typeable
 TagCategory
