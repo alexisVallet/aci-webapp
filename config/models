@@ -8,6 +8,7 @@ Image
     title Text
     description Textarea Maybe
     uploader UserId
+    uploadTime UTCTime
     deriving Show
     deriving Typeable
 TagCategory

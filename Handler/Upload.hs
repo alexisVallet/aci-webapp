@@ -10,6 +10,7 @@ import Control.Monad
 import Data.Text (unpack)
 import Data.Text.Encoding (decodeUtf8)
 import System.IO (openTempFileWithDefaultPermissions, hClose)
+import Data.Time.Clock (getCurrentTime)
 
 import Import
 
@@ -68,6 +69,7 @@ uploadForm html = do
                <div .alert .alert-danger>#{err}
              <div ##{divId}>
                ^{fvInput v}
+        <button type=submit .btn .btn-default>Submit
     |])
   
 
@@ -99,7 +101,8 @@ postUploadR = do
         Just (Entity key _) -> do
           -- If successful and logged in, upload image file
           filename <- writeToServer file
-          _ <- runDB $ insert (Image filename title description key)
+          uploadTime <- liftIO $ getCurrentTime
+          _ <- runDB $ insert (Image filename title description key uploadTime)
           setMessage "Image successfully uploaded"
           redirect UploadR
       -- otherwise, display the error message and go back to the form        
@@ -118,4 +121,3 @@ writeToServer file = liftIO $ do
   hClose handle
   fileMove file path
   return path
-
