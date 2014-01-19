@@ -22,8 +22,9 @@ getHomeR = do
      <h2> Recently uploaded
      <div .container>
        <div .row>
-         $forall Entity _ image <- images
+         $forall Entity imageId image <- images
            <div .col-sm-6 .col-md-3>
-             <div .thumbnail>
-               <img src=#{imageFilename image}>
+             <a href=@{ImageR $ imageId}>
+               <div .thumbnail>
+                 <img src=#{imageFilename image}>
     |]

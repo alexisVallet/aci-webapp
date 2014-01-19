@@ -153,6 +153,15 @@ instance Yesod App where
         development || level == LevelWarn || level == LevelError
 
     makeLogger = return . appLogger
+    isAuthorized UploadR _ = isLogged
+    isAuthorized _ _ = return Authorized
+
+isLogged :: Handler AuthResult
+isLogged = do
+  mu <- maybeAuthId
+  return $ case mu of
+    Nothing -> AuthenticationRequired
+    Just _ -> Authorized
 
 -- How to run database actions.
 instance YesodPersist App where

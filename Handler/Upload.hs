@@ -7,7 +7,6 @@ import Yesod.Form
 import Yesod.Auth
 import Text.Julius (rawJS)
 import Control.Monad
-import Data.Text (unpack)
 import Data.Text.Encoding (decodeUtf8)
 import System.IO (openTempFileWithDefaultPermissions, hClose)
 import Data.Time.Clock (getCurrentTime)

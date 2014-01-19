@@ -7,3 +7,4 @@
 / HomeR GET
 /about AboutR GET
 /upload UploadR GET POST
+/image/#ImageId ImageR GET POST
