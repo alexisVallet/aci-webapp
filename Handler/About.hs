@@ -5,6 +5,7 @@ module Handler.About where
 
 import Import
 
+-- | About page giving a simple text explaining what this web app does.
 getAboutR :: Handler Html
 getAboutR = do
   defaultLayout $ do

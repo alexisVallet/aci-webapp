@@ -23,6 +23,7 @@ library
                      Handler.About
                      Handler.Upload
                      Handler.Image
+                     Handler.Tags
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
@@ -75,6 +76,7 @@ library
                  , wai-logger                    >= 2.0
                  , time                          >= 1.4
                  , esqueleto                     >= 1.3.4.3
+                 , attoparsec                    >= 0.10.4.0
 
 executable         aci-webapp
     if flag(library-only)

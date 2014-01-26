@@ -46,15 +46,18 @@ mkYesodData "App" $(parseRoutesFile "config/routes")
 
 type Form x = Html -> MForm (HandlerT App IO) (FormResult x, Widget)
 
+-- | Widget including the jQuery script files.
 jQuery :: Widget
 jQuery = do
   addScript $ StaticR js_jquery_1_10_2_js
 
+-- | Widget including the bootstrap css and script files.
 bootstrap :: Widget
 bootstrap = do
   addStylesheet $ StaticR css_bootstrap_css
   addScript $ StaticR js_bootstrap_js
 
+-- | Navbar for the default layout.
 navbar :: Widget
 navbar = do
   jQuery
@@ -105,7 +108,8 @@ instance Yesod App where
     makeSessionBackend _ = fmap Just $ defaultClientSessionBackend
         (120 * 60) -- 120 minutes
         "config/client_session_key.aes"
-
+    -- | Default layout with navbar and copyright notice. Automatically includes
+    -- bootstrap and jQuery.
     defaultLayout widget = do
         master <- getYesod
         mmsg <- getMessage
@@ -153,15 +157,34 @@ instance Yesod App where
         development || level == LevelWarn || level == LevelError
 
     makeLogger = return . appLogger
+    -- | Checks authorization for upload and modification of images.
     isAuthorized UploadR _ = isLogged
+    isAuthorized (ImageR imageId) True = isUploader imageId
     isAuthorized _ _ = return Authorized
 
+-- | Checks that the user is logged, and return the corresponding
+-- authorization result.
 isLogged :: Handler AuthResult
 isLogged = do
   mu <- maybeAuthId
   return $ case mu of
     Nothing -> AuthenticationRequired
     Just _ -> Authorized
+
+-- | Checks that the user is logged and is the uploader of a specific image.
+isUploader :: ImageId -> Handler AuthResult
+isUploader imageId = do
+  mUser <- maybeAuth
+  case mUser of
+    Nothing -> return AuthenticationRequired
+    Just (Entity userId _) -> do
+      mImage <- runDB $ get imageId
+      case mImage of
+        Nothing -> return $ Unauthorized "Image doesn't exist."
+        Just image -> do
+          if userId == imageUploader image
+            then return Authorized
+            else return $ Unauthorized "You are not allowed to modify this image."
 
 -- How to run database actions.
 instance YesodPersist App where
