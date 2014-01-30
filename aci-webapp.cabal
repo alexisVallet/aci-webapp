@@ -12,6 +12,9 @@ Flag library-only
     Default:       False
 
 library
+    Includes: aci.h
+    Extra-libraries: ACI
+    Extra-lib-dirs: /usr/local/lib
     exposed-modules: Application
                      Foundation
                      Import
@@ -24,6 +27,8 @@ library
                      Handler.Upload
                      Handler.Image
                      Handler.Tags
+    other-modules:
+                     ACI.Internal
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
