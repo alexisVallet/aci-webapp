@@ -22,7 +22,7 @@ defaultCategoryName = "default"
 
 writeTags :: ImageId -> [(String,String)] -> YesodDB App ()
 writeTags imageId listOfTags = 
-  forM_ listOfTags $ \(categoryName, tagName) -> do
+  forM_ listOfTags $ \(categoryName, tagName') -> do
     let categoryText = pack categoryName
     mCategory <- getBy $ UniqueTagCategory categoryText
     -- insert tag category if necessary, get the key
@@ -30,7 +30,7 @@ writeTags imageId listOfTags =
       Nothing -> insert $ TagCategory categoryText
       Just (Entity key _) -> return key
     -- insert tag if necessary, get the key
-    eTagId <- insertBy $ Tag (pack tagName) categoryId
+    eTagId <- insertBy $ Tag (pack tagName') categoryId
     let tagId = case eTagId of
                   Left (Entity key _) -> key
                   Right key -> key

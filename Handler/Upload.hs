@@ -10,7 +10,6 @@ import Control.Monad
 import Data.Text.Encoding (decodeUtf8)
 import System.IO (openTempFileWithDefaultPermissions, hClose)
 import Data.Time.Clock (getCurrentTime)
-import Data.Text (pack)
 
 import Import
 import Handler.Tags
